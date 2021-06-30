@@ -28,7 +28,7 @@ export const Datatable = (props: tableProps) => {
             <tr key={"tr" + trIndex}>
               {props.columns.map((column: tableColumn, tdIndex: number) => {
                 return (
-                  <td key={"tr" + tdIndex}>
+                  <td key={"td" + tdIndex}>
                     {column.customRow
                       ? column.customRow(data[column.value])
                       : data[column.value]}

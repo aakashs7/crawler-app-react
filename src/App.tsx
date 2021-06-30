@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { Datatable } from "./components/datatable";
+import { Button } from "reactstrap";
 
 interface ServerResponse {
   data: Array<Crawl>;
@@ -37,7 +38,7 @@ const App = () => {
       title: "Headings",
       value: "headings",
       customRow(data: any) {
-        return data.map((d: string) => <li>{d}</li>);
+        return data.map((d: string, i: number) => <li key={"li" + i}>{d}</li>);
       },
     },
     {
@@ -55,19 +56,40 @@ const App = () => {
   ]);
 
   // API call
-  useEffect(() => {
+
+  const getCrowledData = () => {
     axios
       .get("http://localhost:3001/crawl")
       .then((response: AxiosResponse<ServerResponse>) => {
         console.log("res", response);
         setCrawlData(response.data.data);
       });
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getCrowledData();
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
+
+  const recrawlData = () => {
+    axios
+      .post("http://localhost:3001/crawl")
+      .then((response: AxiosResponse<ServerResponse>) => {
+        console.log("res", response);
+      });
+  };
 
   return (
     <>
       <div className="row mt-5">
-        <h3 className="text-center">Website data</h3>
+        <div className="col-md-10">
+          <h3 className="text-center">Website data</h3>
+        </div>
+        <div className="col-md-2">
+          <Button onClick={recrawlData}>Recrawl</Button>
+        </div>
       </div>
       <div className="row mt-5">
         <div className="col-md-1"></div>
